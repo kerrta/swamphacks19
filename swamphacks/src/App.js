@@ -6,177 +6,189 @@ import firebase, { auth, provider } from './firebase.js';
 class App extends Component 
 {
 
-    constructor() 
-    {
+	constructor() 
+	{
 
-        super();
+		super();
 
-        this.state = {
-            currentItem: '',
-            username: '',
-            items: [],
-            user: null
-        }
+		this.state = {
+			currentItem: '',
+			username: '',
+			items: [],
+			user: null
+		}
 
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.login = this.login.bind(this);
-        this.logout = this.logout.bind(this);
-  }
-
-    handleChange(e) 
-    {
-
-        this.setState({
-          [e.target.name]: e.target.value
-        });
-
+		this.handleChange = this.handleChange.bind(this);
+		this.handleSubmit = this.handleSubmit.bind(this);
+		this.login = this.login.bind(this);
+		this.logout = this.logout.bind(this);
     }
 
-    logout() 
-    {
-        auth.signOut()
-        .then(() => {
+	handleChange(e) 
+	{
 
-            this.setState({
-                user: null
-            });
-      
-        });
-    }
+		this.setState({
+		  [e.target.name]: e.target.value
+		});
 
-    login() 
-    {
-        auth.signInWithPopup(provider) 
-          .then((result) => {
-              const user = result.user;
+	}
 
-              this.setState({
-                  user
-              });
+	logout() 
+	{
+		auth.signOut()
+		.then(() => {
 
-          });
-    }
+			this.setState({
+				user: null
+			});
+	  
+		});
+	}
 
-    handleSubmit(e) {
-        e.preventDefault();
+	login() 
+	{
+		auth.signInWithPopup(provider) 
+		  .then((result) => {
+			  const user = result.user;
 
-        const itemsRef = firebase.database().ref('items');
+			  this.setState({
+				  user
+			  });
 
-        const item = {
-            title: this.state.currentItem,
-            user: this.state.username
-        }
+		  });
+	}
 
-        itemsRef.push(item);
+	handleSubmit(e) 
+	{
+		e.preventDefault();
 
-        this.setState({
-            currentItem: '',
-            username: ''
-        });
-    }
+		const itemsRef = firebase.database().ref('items');
 
-    componentDidMount() {
-        const itemsRef = firebase.database().ref('items');
+		const item = {
+			title: this.state.currentItem,
+			user: this.state.username
+		}
 
-        itemsRef.on('value', (snapshot) => {
+		itemsRef.push(item);
 
-            let items = snapshot.val();
-            let newState = [];
+		this.setState({
+			currentItem: '',
+			username: ''
+		});
+	}
 
-            for (let item in items) {
-                newState.push({
-                    id: item,
-                    title: items[item].title,
-                    user: items[item].user
-                });
-            }
+	componentDidMount() 
+	{
 
-            this.setState({
-                items: newState
-            });
+		auth.onAuthStateChanged((user) => {
+			if (user) 
+			{
+	  			this.setState({ user });
+			} 
+  		});
 
-        });
-    }
+		const itemsRef = firebase.database().ref('items');
 
-    removeItem(itemId) {
-        const itemRef = firebase.database().ref(`/items/${itemId}`);
-        itemRef.remove();
-    }
+		itemsRef.on('value', (snapshot) => {
 
-    render() {
-        return (
+			let items = snapshot.val();
+			let newState = [];
 
-            <div className='app'>
+			for (let item in items) {
+				newState.push({
+					id: item,
+					title: items[item].title,
+					user: items[item].user
+				});
+			}
 
-                <header>
+			this.setState({
+				items: newState
+			});
 
-                    <div className="wrapper">
+		});
+	}
 
-              <h1>SwampHacks</h1>
+	removeItem(itemId) 
+	{
+		const itemRef = firebase.database().ref(`/items/${itemId}`);
+		itemRef.remove();
+	}
 
-        {this.state.user ?
-          <button onClick={this.logout}>Log Out</button>                
-          :
-                <button onClick={this.login}>Log In</button>              
-        }
-                             
-        </div>
+	render() 
+	{
+		return (
 
-                </header>
+			<div className='app'>
 
-                <div className='container'>
+				<header>
 
-                    <section className='add-item'>
+					<div className="wrapper">
 
-                        <form onSubmit={this.handleSubmit}>
+			  <h1>SwampHacks</h1>
 
-                            <input type="text" name="username" placeholder="What's your name?" onChange={this.handleChange} value={this.state.username} />
-                            <input type="text" name="currentItem" placeholder="What are you bringing?" onChange={this.handleChange} value={this.state.currentItem} />
-                            <button>Add Item</button>
+		{this.state.user ?
+		  <button onClick={this.logout}>Log Out</button>                
+		  :
+				<button onClick={this.login}>Log In</button>              
+		}
+							 
+		</div>
 
-                        </form>
+				</header>
 
-                    </section>
+				<div className='container'>
 
-                    <section className='display-item'>
+					<section className='add-item'>
 
-                        <div className="wrapper">
+						<form onSubmit={this.handleSubmit}>
 
-                            <ul>
+							<input type="text" name="username" placeholder="What's your name?" onChange={this.handleChange} value={this.state.username} />
+							<input type="text" name="currentItem" placeholder="What are you bringing?" onChange={this.handleChange} value={this.state.currentItem} />
+							<button>Add Item</button>
 
-                                {this.state.items.map((item) => {
+						</form>
 
-                                    return (
+					</section>
 
-                                        <li key={item.id}>
+					<section className='display-item'>
 
-                                            <h3>{item.title}</h3>
-                                            <p>brought by: {item.user}
+						<div className="wrapper">
 
-                                                <button onClick={() => this.removeItem(item.id)}>Remove Item</button>
-                                
-                                            </p>
+							<ul>
 
-                                        </li>
+								{this.state.items.map((item) => {
 
-                                    )
+									return (
 
-                                })}
+										<li key={item.id}>
 
-                            </ul>
+											<h3>{item.title}</h3>
+											<p>brought by: {item.user}
 
-                        </div>
+												<button onClick={() => this.removeItem(item.id)}>Remove Item</button>
+								
+											</p>
 
-                    </section>
+										</li>
 
-                </div>
+									)
 
-            </div>
+								})}
 
-        );
+							</ul>
 
-    }
+						</div>
+
+					</section>
+
+				</div>
+
+			</div>
+
+		);
+
+	}
 
 }
 
