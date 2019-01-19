@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 // import logo from './logo.svg';
 import './App.css';
 import firebase, { auth, provider } from './firebase.js';
+import OrgDash from './OrgDash.js';
+import { BrowserRouter, HashRouter, Route, Link, hashHistory, Switch } from 'react-router-dom';
 
 class App extends Component 
 {
@@ -12,9 +14,14 @@ class App extends Component
 		super();
 
 		this.state = {
-			currentItem: '',
-			username: '',
-			items: [],
+			// name: '',
+   //          role: '', // ORG, POI, VOL
+   //          quantity: '', // AMOUNT OF MATERIAL TO TRANSPORT
+   //          description: '',
+   //          location: null,
+   			currentItem: '',
+   			username: '',
+   			items: [],
 			user: null
 		}
 
@@ -58,6 +65,27 @@ class App extends Component
 		  });
 	}
 
+    // signup()
+    // {
+
+        
+    //     var email = document.getElementById('email').value;
+    //     var password = document.getElementById('password').value;
+
+    //     auth.createUserWithEmailAndPassword(email, password).catch(function(error) {
+    //         var errorCode = error.code;
+    //         var errorMessage = error.message;
+
+    //         if (errorCode == 'auth/weak-password') {
+    //             alert('Weak password');
+    //         } else {
+    //             alert(errorMessage);
+    //         }
+
+    //         console.log(error);
+    //     });
+    // }
+
 	handleSubmit(e) 
 	{
 		e.preventDefault();
@@ -65,15 +93,15 @@ class App extends Component
 		const itemsRef = firebase.database().ref('items');
 
 		const item = {
-			title: this.state.currentItem,
-			user: this.state.username
+			title: this.state.quantity,
+			user: this.state.name
 		}
 
 		itemsRef.push(item);
 
 		this.setState({
-			currentItem: '',
-			username: ''
+			quantity: '',
+			name: ''
 		});
 	}
 
@@ -121,66 +149,83 @@ class App extends Component
 
 			<div className='app'>
 
-				<header>
+				<div id="main">
 
-					<div className="wrapper">
-
-			  <h1>SwampHacks</h1>
-
-		{this.state.user ?
-		  <button onClick={this.logout}>Log Out</button>                
-		  :
-				<button onClick={this.login}>Log In</button>              
-		}
-							 
-		</div>
-
-				</header>
-
-				<div className='container'>
-
-					<section className='add-item'>
-
-						<form onSubmit={this.handleSubmit}>
-
-							<input type="text" name="username" placeholder="What's your name?" onChange={this.handleChange} value={this.state.username} />
-							<input type="text" name="currentItem" placeholder="What are you bringing?" onChange={this.handleChange} value={this.state.currentItem} />
-							<button>Add Item</button>
-
-						</form>
-
-					</section>
-
-					<section className='display-item'>
+					<header>
 
 						<div className="wrapper">
 
-							<ul>
+							<h1>SwampHacks</h1>
 
-								{this.state.items.map((item) => {
-
-									return (
-
-										<li key={item.id}>
-
-											<h3>{item.title}</h3>
-											<p>brought by: {item.user}
-
-												<button onClick={() => this.removeItem(item.id)}>Remove Item</button>
-								
-											</p>
-
-										</li>
-
-									)
-
-								})}
-
-							</ul>
-
+								{ this.state.user
+									? <button onClick={this.logout}>Log Out</button>                
+									: <button onClick={this.login}>Log In</button>              
+								}
+								 
 						</div>
 
-					</section>
+					</header>
+
+					<BrowserRouter>
+
+						<Switch>
+
+							<Route path="/OrgDash" component={OrgDash}></Route>
+							<Link to={"/OrgDash"}>Dash</Link>
+
+						</Switch>
+
+					</BrowserRouter>
+
+					<div className='container'>
+
+						<section className='add-item'>
+
+							<form onSubmit={this.handleSubmit}>
+
+								<input type="text" name="name" placeholder="What's your name?" onChange={this.handleChange} value={this.state.name} />
+								<input type="text" name="quantity" placeholder="How much food?" onChange={this.handleChange} value={this.state.quantity} />
+								<button>Add Request</button>
+
+	                        </form>
+	                        <form>
+	                        	<button onClick=<OrgDash />>Dashboard</button>
+	                        </form>
+
+	                    </section>
+
+						<section className='display-item'>
+
+							<div className="wrapper">
+
+								<ul>
+
+									{this.state.items.map((item) => {
+
+										return (
+
+											<li key={item.id}>
+
+												<h3>{item.title}</h3>
+												<p>brought by: {item.user}
+
+													<button onClick={() => this.removeItem(item.id)}>Remove Item</button>
+									
+												</p>
+
+											</li>
+
+										)
+
+									})}
+
+								</ul>
+
+							</div>
+
+						</section>
+
+					</div>
 
 				</div>
 
