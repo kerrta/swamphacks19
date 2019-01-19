@@ -1,8 +1,20 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
+import firebase from './firebase.js';
 
 class App extends Component {
+
+  constructor() {
+    super();
+    this.state = {
+      currentItem: '',
+      username: ''
+    }
+
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
   render() {
     return (
       <div className="App">
@@ -14,9 +26,9 @@ class App extends Component {
       </header>
       <div className='container'>
         <section className='add-item'>
-          <form>
-          <input type="text" name="username" placeholder="What's your name?" />
-          <input type="text" name="currentItem" placeholder="What are you bringing?" />
+          <form onSubmit={this.handleSubmit}>
+          <input type="text" name="username" placeholder="What's your name?" onChange={this.handleChange} value={this.state.username} />
+          <input type="text" name="currentItem" placeholder="What are you bringing?" onChange={this.handleChange} value={this.state.currentItem} />
          <button>Add Item</button>
           </form>
           </section>
@@ -30,6 +42,29 @@ class App extends Component {
       </div>
     );
   }
+
+  handleChange(e)
+  {
+  	this.setState({
+  		[e.target.name]: e.target.value
+  	});
+  }
+
+  handleSubmit(e) 
+  {
+	  e.preventDefault();
+	  const itemsRef = firebase.database().ref('items');
+	  const item = {
+	    title: this.state.currentItem,
+	    user: this.state.username
+	  }
+	  itemsRef.push(item);
+	  this.setState({
+	    currentItem: '',
+	    username: ''
+	  });
+}
+
 }
 
 export default App;
