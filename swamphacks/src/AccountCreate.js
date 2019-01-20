@@ -9,8 +9,12 @@ class AccountCreate extends React.Component
 {
 
 	state = {
-		email: 'test@test.com',
-			password: 'password'
+		    email: 'test@test.com',
+			password: 'password',
+			name: 'name',
+			location: 'location',
+			phoneNumber: 'phone number',
+			type: 'type'
 	};
 
 
@@ -32,6 +36,28 @@ class AccountCreate extends React.Component
 			 .catch((error) => {
 				 this.setState({ error: error });
 			 });
+
+		 const userRef = firebase.database().ref('users');
+
+		 const user = {
+			 email: this.state.email,
+			 password: this.state.password,
+			 name: this.state.name,
+			 location: this.state.location,
+			 phoneNumber: this.state.phoneNumber,
+			 type: this.state.type
+		 }
+
+		 userRef.push(user);
+
+		 this.setState({
+			 email: '',
+			 password: '',
+			 name: '',
+			 location: '',
+			 phoneNumber: '',
+			 type: ''
+		});
 	 };
 
 	render() 
@@ -50,7 +76,7 @@ class AccountCreate extends React.Component
 				user,
 				error,
 				signOutsignUpWithEmail } = this.state;
-				
+
 		const { email, password } = this.state;
 		
 		return (
@@ -93,7 +119,7 @@ class AccountCreate extends React.Component
 								<br />
 								<button
 									type="submit"
-									onClick={() => signUpWithEmail(email, password)}
+									onClick={() => firebase.auth().createUserWithEmailAndPassword(email, password)}
 								>
 									SignUp
 								</button>
