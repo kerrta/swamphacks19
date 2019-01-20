@@ -78,12 +78,6 @@ class App extends Component
 
 		itemsRef.push(post);
 
-		this.setState({
-			description: '',
-			user: '',
-			specialNotes: '',
-			email: '',
-		});
 	}
 
 	componentDidMount() 
