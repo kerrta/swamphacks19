@@ -6,12 +6,24 @@ import OrgDash from './OrgDash.js';
 import AccountCreate from './AccountCreate.js';
 import { BrowserRouter, Route, Link, hashHistory, Switch } from 'react-router-dom';
 
+class Popup extends React.Component {
+	render() {
+		return (
+			<div className='popup'>
+				<div className='popup_inner'>
+					<AccountCreate />
+				</div>
+			</div>
+		)
+	}
+}
+
+
 class App extends Component 
 {
 
 	constructor() 
 	{
-
 		super();
 
 		this.state = {
@@ -21,12 +33,19 @@ class App extends Component
 			description: '',
 			specialCircumstances: '',
 			email: '',
+			showPopup: false,
 		}
 
 		this.handleChange = this.handleChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.login = this.login.bind(this);
 		this.logout = this.logout.bind(this);
+    }
+
+    togglePopup() {
+    	this.setState({
+    		showPopup: !this.state.showPopup
+    	});
     }
 
 	handleChange(e) 
@@ -136,6 +155,10 @@ class App extends Component
 
 			            </section>)
 
+		var popup = (<Popup component="AccountCreate" closePopup={this.togglePopup.bind(this)}>
+						<AccountCreate />
+					</Popup>)
+
 		return (
 
 			<div className='app'>
@@ -154,14 +177,10 @@ class App extends Component
 
 										<Route path="/AccountCreate" component={AccountCreate}></Route>
 
-											<Link to={"/AccountCreate"}>
-
 												{ this.state.user
-													? <p></p>                
-													: <button>Sign Up</button>              
+													? null                
+													: <button onClick={this.togglePopup.bind(this)}>Sign Up</button>              
 												}
-
-											</Link>
 
 									</Switch>
 
@@ -193,6 +212,13 @@ class App extends Component
 
 
 					<div className='container'>
+
+						{this.state.showPopup
+
+							? popup
+							: null
+
+						}
 
 						{ this.state.user
 
@@ -244,5 +270,6 @@ class App extends Component
 	}
 
 }
+
 
 export default App;
