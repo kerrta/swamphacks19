@@ -20,6 +20,7 @@ class App extends Component
 			user: null,
 			description: '',
 			specialCircumstances: '',
+			email: '',
 		}
 
 		this.handleChange = this.handleChange.bind(this);
@@ -72,6 +73,7 @@ class App extends Component
 			user: this.state.name,
 			description: this.state.description,
 			specialNotes: this.state.specialNotes,
+			email: this.state.email,
 		}
 
 		itemsRef.push(post);
@@ -80,6 +82,7 @@ class App extends Component
 			description: '',
 			user: '',
 			specialNotes: '',
+			email: '',
 		});
 	}
 
@@ -104,7 +107,8 @@ class App extends Component
 				newState.push({
 					id: post,
 					description: posts[post].description,
-					user: posts[post].user
+					user: posts[post].user,
+					email: posts[post].email,
 				});
 			}
 
@@ -129,6 +133,7 @@ class App extends Component
 							<form onSubmit={this.handleSubmit}>
 
 								<input type="text" name="name" placeholder="What's your name?" onChange={this.handleChange} value={this.state.name} />
+								<input type="text" name="email" placeholder="What's your email?" onChange={this.handleChange} value={this.state.email} />
 								<input type="text" name="description" placeholder="How much food?" onChange={this.handleChange} value={this.state.description} />
 								<input type="text" name="specialNotes" placeholder="Special Instructions?" onChange={this.handleChange} value={this.state.specialNotes} />
 								<button>Add Request</button>
@@ -214,7 +219,9 @@ class App extends Component
 											<li key={post.id}>
 
 												<h3>{post.user}</h3>
-												<p>Requested: {post.description}
+												<p>Requested: {post.description}</p>
+												<p>Email: {post.email}</p>
+												<p>
 
 													<button onClick={() => this.removeItem(post.id)}>Remove Item</button>
 									
