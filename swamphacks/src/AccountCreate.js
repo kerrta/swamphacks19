@@ -105,17 +105,7 @@ class AccountCreate extends React.Component
 
 				<div id="main">
 
-					<header>
-
-						<div className="wrapper">
-
-							<h1>SwampHacks</h1>
-								 
-						</div>
-
-					</header>
-
-					<div className='container'>
+					<div className='containerSignUp'>
 
 						<section className='add-item'>
 
