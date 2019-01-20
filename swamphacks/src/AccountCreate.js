@@ -8,14 +8,22 @@ import App from './App.js';
 class AccountCreate extends React.Component 
 {
 
-	state = {
+	constructor()
+	{
+		super();
+
+		this.state = {
 		    email: 'test@test.com',
 			password: 'password',
 			name: 'name',
 			location: 'location',
 			phoneNumber: 'phone number',
 			type: 'type'
-	};
+		};
+
+		this.handleSubmit = this.handleSubmit.bind(this);
+	}
+	
 
 
 	handleInputChange(event)
@@ -37,27 +45,40 @@ class AccountCreate extends React.Component
 				 this.setState({ error: error });
 			 });
 
-		 const userRef = firebase.database().ref('users');
+			 const user = {
+				 email: this.state.email,
+				 password: this.state.password,
+				 name: this.state.name,
+				 location: this.state.location,
+				 phoneNumber: this.state.phoneNumber,
+				 type: this.state.type
+			 }
 
-		 const user = {
-			 email: this.state.email,
-			 password: this.state.password,
-			 name: this.state.name,
-			 location: this.state.location,
-			 phoneNumber: this.state.phoneNumber,
-			 type: this.state.type
-		 }
+	firebase.database()
+			.ref('users')
+			.orderByChild("email")
+			.equalTo(user.email)
+			.once("value", snapshot => {
+				const userData = snapshot.val();
 
-		 userRef.push(user);
+				if(!userData)
+				{
+					const userRef = firebase.database().ref('users');
 
-		 this.setState({
-			 email: '',
-			 password: '',
-			 name: '',
-			 location: '',
-			 phoneNumber: '',
-			 type: ''
-		});
+					 userRef.push(user);
+
+					 this.setState({
+						 email: '',
+						 password: '',
+						 name: '',
+						 location: '',
+						 phoneNumber: '',
+						 type: ''
+					});
+				}
+
+		 	});
+		 
 	 };
 
 	render() 
@@ -98,7 +119,7 @@ class AccountCreate extends React.Component
 
 						<section className='add-item'>
 
-							<form onSubmit={e => e.preventDefault()}>
+							<form onSubmit={this.handleSubmit}>
 								<input
 									type="text"
 									placeholder="Email"
