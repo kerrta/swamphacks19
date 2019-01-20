@@ -14,15 +14,11 @@ class App extends Component
 		super();
 
 		this.state = {
-			// name: '',
-   //          role: '', // ORG, POI, VOL
-   //          quantity: '', // AMOUNT OF MATERIAL TO TRANSPORT
-   //          description: '',
-   //          location: null,
-   			currentItem: '',
    			username: '',
-   			items: [],
-			user: null
+   			posts: [],
+			user: null,
+			description: '',
+			specialCircumstances: '',
 		}
 
 		this.handleChange = this.handleChange.bind(this);
@@ -65,43 +61,24 @@ class App extends Component
 		  });
 	}
 
-    // signup()
-    // {
-
-        
-    //     var email = document.getElementById('email').value;
-    //     var password = document.getElementById('password').value;
-
-    //     auth.createUserWithEmailAndPassword(email, password).catch(function(error) {
-    //         var errorCode = error.code;
-    //         var errorMessage = error.message;
-
-    //         if (errorCode == 'auth/weak-password') {
-    //             alert('Weak password');
-    //         } else {
-    //             alert(errorMessage);
-    //         }
-
-    //         console.log(error);
-    //     });
-    // }
-
 	handleSubmit(e) 
 	{
 		e.preventDefault();
 
-		const itemsRef = firebase.database().ref('items');
+		const itemsRef = firebase.database().ref('posts');
 
-		const item = {
-			title: this.state.quantity,
-			user: this.state.name
+		const post = {
+			user: this.state.name,
+			description: this.state.description,
+			specialNotes: this.state.specialNotes,
 		}
 
-		itemsRef.push(item);
+		itemsRef.push(post);
 
 		this.setState({
-			quantity: '',
-			name: ''
+			description: '',
+			user: '',
+			specialNotes: '',
 		});
 	}
 
@@ -115,23 +92,23 @@ class App extends Component
 			} 
   		});
 
-		const itemsRef = firebase.database().ref('items');
+		const itemsRef = firebase.database().ref('posts');
 
 		itemsRef.on('value', (snapshot) => {
 
-			let items = snapshot.val();
+			let posts = snapshot.val();
 			let newState = [];
 
-			for (let item in items) {
+			for (let post in posts) {
 				newState.push({
-					id: item,
-					title: items[item].title,
-					user: items[item].user
+					id: post,
+					description: posts[post].description,
+					user: posts[post].user
 				});
 			}
 
 			this.setState({
-				items: newState
+				posts: newState
 			});
 
 		});
@@ -139,7 +116,7 @@ class App extends Component
 
 	removeItem(itemId) 
 	{
-		const itemRef = firebase.database().ref(`/items/${itemId}`);
+		const itemRef = firebase.database().ref(`/posts/${itemId}`);
 		itemRef.remove();
 	}
 
@@ -155,7 +132,7 @@ class App extends Component
 
 						<div className="wrapper">
 
-							<h1>SwampHacks</h1>
+							<h1>FOOZOO</h1>
 
 								{ this.state.user
 									? <button onClick={this.logout}>Log Out</button>                
@@ -171,7 +148,6 @@ class App extends Component
 						<Switch>
 
 							<Route path="/OrgDash" component={OrgDash}></Route>
-							<Link to={"/OrgDash"}>Dash</Link>
 
 						</Switch>
 
@@ -184,7 +160,8 @@ class App extends Component
 							<form onSubmit={this.handleSubmit}>
 
 								<input type="text" name="name" placeholder="What's your name?" onChange={this.handleChange} value={this.state.name} />
-								<input type="text" name="quantity" placeholder="How much food?" onChange={this.handleChange} value={this.state.quantity} />
+								<input type="text" name="description" placeholder="How much food?" onChange={this.handleChange} value={this.state.description} />
+								<input type="text" name="specialNotes" placeholder="Special Instructions?" onChange={this.handleChange} value={this.state.specialNotes} />
 								<button>Add Request</button>
 
 	                        </form>
@@ -200,16 +177,16 @@ class App extends Component
 
 								<ul>
 
-									{this.state.items.map((item) => {
+									{this.state.posts.map((post) => {
 
 										return (
 
-											<li key={item.id}>
+											<li key={post.id}>
 
-												<h3>{item.title}</h3>
-												<p>brought by: {item.user}
+												<h3>{post.user}</h3>
+												<p>Requested: {post.description}
 
-													<button onClick={() => this.removeItem(item.id)}>Remove Item</button>
+													<button onClick={() => this.removeItem(post.id)}>Remove Item</button>
 									
 												</p>
 

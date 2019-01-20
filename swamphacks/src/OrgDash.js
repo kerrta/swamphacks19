@@ -7,7 +7,6 @@ const styles = {
 		justifyContent: 'center',
 		fontFamily: 'Open Sans',
 		backgroundColor: 'White',
-		fontSize: 150,
 
 	}
 }
@@ -17,7 +16,14 @@ class OrgDash extends React.Component {
 		return (
 			<div className="OrgDash">
 				<div style={styles.dashboard}>
-					<h1>Hello</h1>
+					<div class="sidenav">
+
+
+					</div>
+
+					<div>
+
+					</div>
 				</div>
 			</div>
 		) 
