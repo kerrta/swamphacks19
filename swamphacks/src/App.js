@@ -22,7 +22,6 @@ class App extends Component
 			specialCircumstances: '',
 		}
 
-		console.log(this);
 		this.handleChange = this.handleChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.login = this.login.bind(this);

@@ -8,10 +8,22 @@ import App from './App.js';
 class AccountCreate extends React.Component 
 {
 
-	state = {
-		email: 'test@test.com',
-			password: 'password'
-	};
+	constructor()
+	{
+		super();
+
+		this.state = {
+		    email: 'test@test.com',
+			password: 'password',
+			name: 'name',
+			location: 'location',
+			phoneNumber: 'phone number',
+			type: 'type'
+		};
+
+		this.handleSubmit = this.handleSubmit.bind(this);
+	}
+	
 
 
 	handleInputChange(event)
@@ -32,6 +44,41 @@ class AccountCreate extends React.Component
 			 .catch((error) => {
 				 this.setState({ error: error });
 			 });
+
+			 const user = {
+				 email: this.state.email,
+				 password: this.state.password,
+				 name: this.state.name,
+				 location: this.state.location,
+				 phoneNumber: this.state.phoneNumber,
+				 type: this.state.type
+			 }
+
+	firebase.database()
+			.ref('users')
+			.orderByChild("email")
+			.equalTo(user.email)
+			.once("value", snapshot => {
+				const userData = snapshot.val();
+
+				if(!userData)
+				{
+					const userRef = firebase.database().ref('users');
+
+					 userRef.push(user);
+
+					 this.setState({
+						 email: '',
+						 password: '',
+						 name: '',
+						 location: '',
+						 phoneNumber: '',
+						 type: ''
+					});
+				}
+
+		 	});
+		 
 	 };
 
 	render() 
@@ -50,7 +97,7 @@ class AccountCreate extends React.Component
 				user,
 				error,
 				signOutsignUpWithEmail } = this.state;
-				
+
 		const { email, password } = this.state;
 		
 		return (
@@ -72,7 +119,7 @@ class AccountCreate extends React.Component
 
 						<section className='add-item'>
 
-							<form onSubmit={e => e.preventDefault()}>
+							<form onSubmit={this.handleSubmit}>
 								<input
 									type="text"
 									placeholder="Email"
@@ -93,7 +140,7 @@ class AccountCreate extends React.Component
 								<br />
 								<button
 									type="submit"
-									onClick={() => signUpWithEmail(email, password)}
+									onClick={() => firebase.auth().createUserWithEmailAndPassword(email, password)}
 								>
 									SignUp
 								</button>
