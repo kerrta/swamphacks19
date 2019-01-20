@@ -3,7 +3,8 @@ import React, { Component } from 'react';
 import './App.css';
 import firebase, { auth, provider } from './firebase.js';
 import OrgDash from './OrgDash.js';
-import { BrowserRouter, HashRouter, Route, Link, hashHistory, Switch } from 'react-router-dom';
+import AccountCreate from './AccountCreate.js';
+import { BrowserRouter, Route, Link, hashHistory, Switch } from 'react-router-dom';
 
 class App extends Component 
 {
@@ -25,6 +26,7 @@ class App extends Component
 			user: null
 		}
 
+		console.log(this);
 		this.handleChange = this.handleChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.login = this.login.bind(this);
@@ -172,6 +174,17 @@ class App extends Component
 
 							<Route path="/OrgDash" component={OrgDash}></Route>
 							<Link to={"/OrgDash"}>Dash</Link>
+
+						</Switch>
+
+					</BrowserRouter>
+
+					<BrowserRouter>
+
+						<Switch>
+
+							<Route path="/AccountCreate" component={AccountCreate}></Route>
+							<Link to={"/AccountCreate"}>Sign Up</Link>
 
 						</Switch>
 
