@@ -124,6 +124,19 @@ class App extends Component
 	render() 
 	{
 
+		var request = (<section className='add-item'>
+
+							<form onSubmit={this.handleSubmit}>
+
+								<input type="text" name="name" placeholder="What's your name?" onChange={this.handleChange} value={this.state.name} />
+								<input type="text" name="description" placeholder="How much food?" onChange={this.handleChange} value={this.state.description} />
+								<input type="text" name="specialNotes" placeholder="Special Instructions?" onChange={this.handleChange} value={this.state.specialNotes} />
+								<button>Add Request</button>
+
+	                        </form>
+
+			            </section>)
+
 		return (
 
 			<div className='app'>
@@ -136,22 +149,30 @@ class App extends Component
 
 							<h1>FOOZOO</h1>
 
-								{ this.state.user
-									? <button onClick={this.logout}>Log Out</button>                
-									: <button onClick={this.login}>Log In</button>              
-								}
-								 
 								<BrowserRouter>
 
 									<Switch>
 
 										<Route path="/AccountCreate" component={AccountCreate}></Route>
-										<Link to={"/AccountCreate"}><button>Sign Up</button></Link>
+
+											<Link to={"/AccountCreate"}>
+
+												{ this.state.user
+													? <p></p>                
+													: <button>Sign Up</button>              
+												}
+
+											</Link>
 
 									</Switch>
 
 								</BrowserRouter>
 
+								{ this.state.user
+									? <button onClick={this.logout}>Log Out</button>                
+									: <button onClick={this.login}>Log In</button>              
+								}
+								 
 						</div>
 
 					</header>
@@ -174,18 +195,11 @@ class App extends Component
 
 					<div className='container'>
 
-						<section className='add-item'>
+						{ this.state.user
 
-							<form onSubmit={this.handleSubmit}>
-
-								<input type="text" name="name" placeholder="What's your name?" onChange={this.handleChange} value={this.state.name} />
-								<input type="text" name="description" placeholder="How much food?" onChange={this.handleChange} value={this.state.description} />
-								<input type="text" name="specialNotes" placeholder="Special Instructions?" onChange={this.handleChange} value={this.state.specialNotes} />
-								<button>Add Request</button>
-
-	                        </form>
-
-	                    </section>
+							? request
+			                :<p></p>
+			            }
 
 						<section className='display-item'>
 
