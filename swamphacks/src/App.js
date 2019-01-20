@@ -124,6 +124,7 @@ class App extends Component
 
 	render() 
 	{
+
 		return (
 
 			<div className='app'>
@@ -141,30 +142,36 @@ class App extends Component
 									: <button onClick={this.login}>Log In</button>              
 								}
 								 
+								<BrowserRouter>
+
+									<Switch>
+
+										<Route path="/AccountCreate" component={AccountCreate}></Route>
+										<Link to={"/AccountCreate"}><button>Sign Up</button></Link>
+
+									</Switch>
+
+								</BrowserRouter>
+
 						</div>
 
 					</header>
+
+					<div>
 
 					<BrowserRouter>
 
 						<Switch>
 
 							<Route path="/OrgDash" component={OrgDash}></Route>
+							<Link to={"/OrgDash"}><button>Dashboard</button></Link>
 
 						</Switch>
 
 					</BrowserRouter>
 
-					<BrowserRouter>
+					</div>
 
-						<Switch>
-
-							<Route path="/AccountCreate" component={AccountCreate}></Route>
-							<Link to={"/AccountCreate"}>Sign Up</Link>
-
-						</Switch>
-
-					</BrowserRouter>
 
 					<div className='container'>
 
@@ -177,9 +184,6 @@ class App extends Component
 								<input type="text" name="specialNotes" placeholder="Special Instructions?" onChange={this.handleChange} value={this.state.specialNotes} />
 								<button>Add Request</button>
 
-	                        </form>
-	                        <form>
-	                        	<button onClick=<OrgDash />>Dashboard</button>
 	                        </form>
 
 	                    </section>
